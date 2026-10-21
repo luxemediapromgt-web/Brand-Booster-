@@ -44,6 +44,7 @@
 
   <!-- Preloader -->
   <div class="preloader" id="preloader" aria-hidden="true">
+    <svg class="preloader__curve" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="curveGold" x1="0" y1="1" x2="1" y2="0"><stop offset="0%" stop-color="#a8751f"/><stop offset="38%" stop-color="#d9a441"/><stop offset="65%" stop-color="#fff0bf"/><stop offset="82%" stop-color="#e8c06a"/><stop offset="100%" stop-color="#a8751f"/></linearGradient><filter id="curveGlow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="7" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path class="preloader__curve-glow" d="M -30 1010 C 210 900, 440 670, 610 420 S 850 120, 1030 -25"/><path class="preloader__curve-line" d="M -30 1010 C 210 900, 440 670, 610 420 S 850 120, 1030 -25"/></svg>
     <img class="preloader__logo" src="assets/img/logo-mark.png" alt="">
     <span class="preloader__text">BRAND BOOSTER</span>
     <span class="preloader__bar"><i></i></span>
@@ -52,6 +53,8 @@
   <div class="progress" id="progress"></div>
   <canvas id="particles" aria-hidden="true"></canvas>
   <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+  <div class="cursor" id="cursor" aria-hidden="true"><i class="c-dot"></i><i class="c-ring"><b></b></i></div>
+  <div class="wipe" id="wipe" aria-hidden="true"><i style="--k:0"></i><i style="--k:1"></i><i style="--k:2"></i><i style="--k:3"></i><i style="--k:4"></i></div>
 
   <!-- Header -->
   <header class="nav" id="nav">
@@ -195,12 +198,62 @@
             <span class="reel__play"><svg><use href="#i-play"/></svg></span>
             <span class="reel__label"><small>Video 04</small>Meet Brand Booster</span>
           </button>
-          <div class="reel__cta glass reveal" style="--d:.4s">
+          <!-- Video 05 (left) -->
+          <button class="reel__item reveal" data-video="assets/video/brand-intro.mp4" data-title="NeuroMarketing" style="--d:.4s" aria-label="Play NeuroMarketing video">
+            <video src="assets/video/brand-intro.mp4" poster="assets/video/brand-intro.jpg" muted loop playsinline preload="metadata"></video>
+            <span class="reel__play"><svg><use href="#i-play"/></svg></span>
+            <span class="reel__label"><small>Video 05</small>NeuroMarketing</span>
+          </button>
+          <!-- Picture (right): fades through 3 posters, click to enlarge -->
+          <div class="reel__pic reveal" id="reelPic" style="--d:.5s" role="button" tabindex="0" aria-label="View studio pictures">
+            <img class="is-on" src="assets/img/who-we-are.jpg" data-cap="Who we are" alt="Who we are: Brand Booster" loading="lazy">
+            <img src="assets/img/we-are-brand-booster.jpg" data-cap="We are Brand Booster" alt="We are Brand Booster, a marketing agency built around strategy, creativity and execution" loading="lazy">
+            <img src="assets/img/what-we-do.jpg" data-cap="What we do" alt="What we do: campaigns, events, BTL activations, digital marketing, printing and branding, strategy and consulting" loading="lazy">
+            <span class="reel__pic-label"><small>Studio</small><b id="reelPicCap">Who we are</b></span>
+          </div>
+
+        </div>
+
+        <!-- "Want a video like this" box, now below the whole showreel -->
+        <div class="reel__cta-row">
+          <div class="reel__cta reel__cta--wide glass reveal" style="--d:.1s">
             <h3>Want a video like this <em>for your brand?</em></h3>
             <p>Reels, brand films and product videos, from idea to final edit.</p>
             <a href="#contact" class="btn btn--gold btn--sm">Start Your Project <svg class="ico"><use href="#i-arrow"/></svg></a>
           </div>
         </div>
+
+        <style>
+          .reel__cta-row{margin-top:32px;display:flex;justify-content:center}
+          .reel__cta--wide{grid-column:auto;width:100%;max-width:760px;text-align:center;align-items:center}
+          .reel__pic{position:relative;overflow:hidden;border-radius:22px;border:1px solid rgba(217,164,65,.55);background:#0e1020;cursor:zoom-in;aspect-ratio:1/1;min-height:0;box-shadow:0 14px 40px rgba(0,0,0,.25)}
+          .reel__pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.08);transition:opacity 1s ease,transform 4s ease}
+          .reel__pic img.is-on{opacity:1;transform:scale(1)}
+          .reel__pic::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.55),transparent 45%);pointer-events:none}
+          .reel__pic-label{position:absolute;left:18px;bottom:16px;z-index:2;color:#fff;font-family:'Playfair Display',serif;font-size:1.15rem;line-height:1.2;pointer-events:none}
+          .reel__pic-label small{display:block;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:#f7e2a4;margin-bottom:4px}
+          .reel__pic-label b{font-weight:600}
+        </style>
+        <script>
+        (function(){
+          var pic=document.getElementById('reelPic');
+          if(!pic)return;
+          var imgs=pic.querySelectorAll('img'), cap=document.getElementById('reelPicCap'), k=0, t=null;
+          function go(n){
+            imgs[k].classList.remove('is-on');k=n;imgs[k].classList.add('is-on');
+            cap.textContent=imgs[k].getAttribute('data-cap');
+          }
+          function start(){clearInterval(t);t=setInterval(function(){go((k+1)%imgs.length);},3000);}
+          start();
+          function open(){
+            if(window.bbLightbox)window.bbLightbox.open(imgs[k].src,imgs[k].getAttribute('data-cap'));
+          }
+          pic.addEventListener('click',open);
+          pic.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});
+          pic.addEventListener('mouseenter',function(){clearInterval(t);});
+          pic.addEventListener('mouseleave',start);
+        })();
+        </script>
       </div>
     </section>
 
@@ -229,33 +282,135 @@
           <p>A look at our creative studio, the tools we use and the way we think. Click any card to enlarge.</p>
         </header>
 
-        <div class="gallery">
-          <figure class="shot shot--tall reveal" style="--d:0s">
-            <button data-img="assets/img/portfolio-full.jpg" data-title="Creative studio overview"><img src="assets/img/portfolio-full.jpg" alt="Creative studio portfolio overview with services, featured work and tools" loading="lazy"></button>
-          </figure>
-          <figure class="shot reveal" style="--d:.1s">
-            <button data-img="assets/img/portfolio-cover.jpg" data-title="Portfolio"><img src="assets/img/portfolio-cover.jpg" alt="Portfolio cover" loading="lazy"></button>
-          </figure>
-          <figure class="shot reveal" style="--d:.2s">
-            <button data-img="assets/img/why-me.jpg" data-title="Why choose us"><img src="assets/img/why-me.jpg" alt="Why choose us: strategy-backed design and long-term brand growth" loading="lazy"></button>
-          </figure>
-          <figure class="shot reveal" style="--d:.3s">
-            <button data-img="assets/img/design-tools.jpg" data-title="Design tools"><img src="assets/img/design-tools.jpg" alt="Design tools: Photoshop, Illustrator, Pixellab, Picsart, Canva, ChatGPT" loading="lazy"></button>
-          </figure>
-          <div class="gallery__cta reveal" style="--d:.4s">
-            <div class="gallery__cta-text">
-              <h3>Your brand could be next</h3>
-              <p>Let's build a look that people remember.</p>
-              <a href="#contact" class="btn btn--gold btn--sm">Get in Touch <svg class="ico"><use href="#i-arrow"/></svg></a>
+        <!-- Auto-playing slider with click-to-enlarge and scroll-in animation -->
+        <div class="pslider" id="pslider">
+          <div class="pslider__viewport">
+            <div class="pslider__track">
+              <div class="pslide"><button type="button" data-full="assets/img/portfolio-full.jpg" data-cap="Creative studio overview"><img src="assets/img/portfolio-full.jpg" alt="Creative studio portfolio overview with services, featured work and tools"></button></div>
+              <div class="pslide"><button type="button" data-full="assets/img/about-me.jpg" data-cap="About me"><img src="assets/img/about-me.jpg" alt="About me: creative designer specialising in brand identity, social media creatives and marketing materials"></button></div>
+              <div class="pslide"><button type="button" data-full="assets/img/why-me.jpg" data-cap="Why choose us"><img src="assets/img/why-me.jpg" alt="Why choose us: strategy-backed design and long-term brand growth"></button></div>
+              <div class="pslide"><button type="button" data-full="assets/img/design-tools.jpg" data-cap="Design tools"><img src="assets/img/design-tools.jpg" alt="Design tools: Photoshop, Illustrator, Pixellab, Picsart, Canva, ChatGPT"></button></div>
+              <div class="pslide"><button type="button" data-full="assets/img/connect.jpg" data-cap="Let's connect"><img src="assets/img/connect.jpg" alt="Let's connect: WhatsApp, Instagram and email"></button></div>
             </div>
           </div>
+          <div class="pslider__dots" id="psliderDots"></div>
         </div>
+
+        <style>
+          .pslider{max-width:760px;margin:0 auto}
+          /* entrance animation: plays when the slider scrolls into view */
+          .js .pslider{opacity:0;transform:translateY(60px) scale(.92);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.8,.2,1)}
+          .js .pslider.is-in{opacity:1;transform:none}
+          .pslider.is-in .pslider__viewport{animation:psGlow 2.2s ease .4s 1}
+          @keyframes psGlow{0%{box-shadow:0 0 0 rgba(217,164,65,0)}40%{box-shadow:0 0 60px rgba(217,164,65,.55)}100%{box-shadow:0 0 0 rgba(217,164,65,0)}}
+          .pslider__viewport{overflow:hidden;border-radius:22px}
+          .pslider__track{display:flex;transition:transform .7s cubic-bezier(.65,0,.35,1)}
+          .pslide{min-width:100%;display:flex;justify-content:center}
+          .pslide button{background:none;border:0;padding:0;cursor:zoom-in;height:min(72vh,640px);max-width:100%}
+          .pslide img{height:100%;width:auto;max-width:100%;object-fit:contain;border-radius:20px;box-shadow:0 18px 50px rgba(0,0,0,.35);transform:scale(.9);opacity:.5;transition:transform .8s ease,opacity .8s ease}
+          .pslide.is-active img{transform:scale(1);opacity:1}
+          .pslide button:hover img{transform:scale(1.02)}
+          .pslider__dots{display:flex;justify-content:center;gap:10px;padding:22px 0 4px}
+          .pdot{width:12px;height:12px;border-radius:50%;border:0;padding:0;background:linear-gradient(135deg,#f7e2a4,#d9a441 55%,#a8751f);opacity:.45;cursor:pointer;transition:all .35s}
+          .pdot.is-on{opacity:1;transform:scale(1.4);box-shadow:0 0 14px rgba(217,164,65,.85)}
+
+          /* click-to-enlarge viewer */
+          .plb{position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:24px;background:rgba(10,8,14,.88);backdrop-filter:blur(6px);opacity:0;visibility:hidden;transition:opacity .35s ease,visibility .35s}
+          .plb.is-open{opacity:1;visibility:visible}
+          .plb img{max-width:min(94vw,1000px);max-height:82vh;object-fit:contain;border-radius:16px;box-shadow:0 25px 80px rgba(0,0,0,.6);transform:scale(.7);transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+          .plb.is-open img{transform:scale(1)}
+          .plb p{margin:0;color:#f7e2a4;font-family:'Playfair Display',serif;font-size:1.1rem}
+          .plb__x{position:absolute;top:18px;right:22px;width:46px;height:46px;border-radius:50%;border:1px solid rgba(247,226,164,.6);background:rgba(0,0,0,.4);color:#f7e2a4;font-size:28px;line-height:1;cursor:pointer}
+        </style>
+
+        <script>
+        (function(){
+          var box=document.getElementById('pslider');
+          var track=box.querySelector('.pslider__track');
+          var slides=track.children;
+          var dotsBox=document.getElementById('psliderDots');
+          var count=slides.length, i=0, timer=null, paused=false, visible=false;
+
+          /* dots: images ke barabar khud ban jate hain */
+          for(var n=0;n<count;n++){
+            (function(n){
+              var d=document.createElement('button');
+              d.type='button';
+              d.className='pdot';
+              d.setAttribute('aria-label','Go to image '+(n+1));
+              d.onclick=function(){i=n;show();restart();};
+              dotsBox.appendChild(d);
+            })(n);
+          }
+          function show(){
+            track.style.transform='translateX(-'+(i*100)+'%)';
+            for(var k=0;k<count;k++) slides[k].classList.toggle('is-active',k===i);
+            var dots=dotsBox.children;
+            for(var k2=0;k2<dots.length;k2++) dots[k2].classList.toggle('is-on',k2===i);
+          }
+          function stop(){clearInterval(timer);timer=null;}
+          function start(){stop();if(visible&&!paused){timer=setInterval(function(){i=(i+1)%count;show();},3000);}}
+          function restart(){start();}
+
+          /* mouse upar ho to ruk jaye */
+          box.addEventListener('mouseenter',function(){paused=true;stop();});
+          box.addEventListener('mouseleave',function(){paused=false;start();});
+
+          /* animation tab chale jab slider screen par pahunche */
+          function reveal(){
+            if(box.classList.contains('is-in'))return;
+            box.classList.add('is-in');visible=true;i=0;show();start();
+          }
+          if('IntersectionObserver' in window){
+            var io=new IntersectionObserver(function(entries){
+              entries.forEach(function(e){
+                if(e.isIntersecting){reveal();visible=true;start();}
+                else{visible=false;stop();}
+              });
+            },{threshold:0.25});
+            io.observe(box);
+          }else{reveal();}
+          show();
+
+          /* click par picture bari ho jaye */
+          var lb=document.createElement('div');
+          lb.className='plb';
+          lb.innerHTML='<button type="button" class="plb__x" aria-label="Close">&times;</button><img alt=""><p></p>';
+          document.body.appendChild(lb);
+          var lbImg=lb.querySelector('img'), lbCap=lb.querySelector('p');
+          function openLb(src,cap){
+            lbImg.src=src;lbCap.textContent=cap||'';
+            lb.classList.add('is-open');document.body.style.overflow='hidden';
+            paused=true;stop();
+          }
+          function closeLb(){
+            lb.classList.remove('is-open');document.body.style.overflow='';
+            paused=false;start();
+          }
+          track.addEventListener('click',function(e){
+            var b=e.target.closest('button[data-full]');
+            if(b)openLb(b.getAttribute('data-full'),b.getAttribute('data-cap'));
+          });
+          window.bbLightbox={open:openLb};
+          lb.addEventListener('click',function(e){if(e.target!==lbImg)closeLb();});
+          document.addEventListener('keydown',function(e){if(e.key==='Escape'&&lb.classList.contains('is-open'))closeLb();});
+        })();
+        </script>
 
         <div class="tools reveal">
           <span class="tools__label">Tools we use</span>
           <ul>
             <li>Photoshop</li><li>Illustrator</li><li>Pixellab</li><li>Picsart</li><li>Canva</li><li>ChatGPT</li>
           </ul>
+        </div>
+
+        <div class="logo-card glass reveal">
+          <img class="logo-card__img" src="assets/img/logo-full.jpg" alt="Brand Booster logo" loading="lazy">
+          <div class="logo-card__text">
+            <h3>Your brand could be <em>next</em></h3>
+            <p>Let's build a look that people remember.</p>
+            <a href="#contact" class="btn btn--gold btn--sm">Get in Touch <svg class="ico"><use href="#i-arrow"/></svg></a>
+          </div>
         </div>
       </div>
     </section>
