@@ -36,7 +36,7 @@
   /* ---------- Media gets the curtain / clip reveal ---------- */
   $$('.reel__item, .shot, .gallery__cta, .reel__cta').forEach(function (el) { el.classList.add('clip'); });
 
-  /* ---------- Preloader: split curtain ---------- */
+  /* ---------- Preloader: upward gate with horizontal centre line ---------- */
   var pre = $('#preloader');
   var heroRevealed = false;
   function revealHero() {
@@ -289,9 +289,32 @@
   modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !modal.hidden) closeModal(); });
 
-  /* ---------- Contact form -> WhatsApp ---------- */
+  /* ---------- Contact form -> email (FormSubmit), WhatsApp as fallback ---------- */
   var form = $('#contactForm'), note = $('#formNote');
   var WA_NUMBER = '923077667899'; // change here if the number changes
+  var CFG = window.BB_CONFIG || {};
+  var FORM_EMAIL = (CFG.FORM_EMAIL || '').trim(); // js/config.js se aata hai
+
+  /* ---------- Analytics (sirf tab load hota hai jab js/config.js mein ID likhi ho) ---------- */
+  if (CFG.GA_ID) {
+    var ga = document.createElement('script'); ga.async = true;
+    ga.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(CFG.GA_ID);
+    document.head.appendChild(ga);
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { dataLayer.push(arguments); };
+    gtag('js', new Date()); gtag('config', CFG.GA_ID);
+  }
+  if (CFG.PIXEL_ID) {
+    !function (f, b, e, v, n, t, s) { if (f.fbq) return; n = f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); }; if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = []; t = b.createElement(e); t.async = !0; t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s); }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', CFG.PIXEL_ID); fbq('track', 'PageView');
+  }
+  // WhatsApp / call / email clicks ko bhi track karo
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href^="https://wa.me"],a[href^="mailto:"]'); if (!a) return;
+    var kind = a.href.indexOf('wa.me') > -1 ? 'whatsapp' : 'email';
+    try { if (window.gtag) gtag('event', 'contact_click', { method: kind }); } catch (_) {}
+    try { if (window.fbq) fbq('track', 'Contact', { method: kind }); } catch (_) {}
+  });
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var ok = true;
@@ -301,14 +324,56 @@
     });
     if (!ok) { note.textContent = 'Please fill in all the fields correctly.'; note.className = 'form__note err'; return; }
     var d = new FormData(form);
-    var msg = 'Hello Brand Booster!%0A%0A' +
-      'Name: ' + encodeURIComponent(d.get('name')) + '%0A' +
-      'Email: ' + encodeURIComponent(d.get('email')) + '%0A' +
-      'Service: ' + encodeURIComponent(d.get('service')) + '%0A' +
-      'Project: ' + encodeURIComponent(d.get('message'));
-    window.open('https://wa.me/' + WA_NUMBER + '?text=' + msg, '_blank', 'noopener');
-    note.textContent = 'Thank you! Opening WhatsApp to send your message.'; note.className = 'form__note ok';
-    form.reset();
+    var fields = { name: d.get('name'), email: d.get('email'), service: d.get('service'), message: d.get('message') };
+    var btn = $('button[type="submit"]', form);
+
+    function trackLead() {
+      try { if (window.gtag) gtag('event', 'generate_lead', { event_category: 'contact_form', event_label: fields.service }); } catch (_) {}
+      try { if (window.fbq) fbq('track', 'Lead', { content_name: fields.service }); } catch (_) {}
+    }
+    function openWhatsApp(text) {
+      var msg = 'Hello Brand Booster!%0A%0A' +
+        'Name: ' + encodeURIComponent(fields.name) + '%0A' +
+        'Email: ' + encodeURIComponent(fields.email) + '%0A' +
+        'Service: ' + encodeURIComponent(fields.service) + '%0A' +
+        'Project: ' + encodeURIComponent(fields.message);
+      var wa = 'https://wa.me/' + WA_NUMBER + '?text=' + msg;
+      var w = window.open(wa, '_blank', 'noopener');
+      note.textContent = text; note.className = 'form__note ok';
+      if (!w) { // popup blocker ne rok diya to link dikha do
+        note.appendChild(document.createTextNode(' '));
+        var l = document.createElement('a'); l.href = wa; l.target = '_blank'; l.rel = 'noopener';
+        l.textContent = 'Tap here to open WhatsApp.'; l.style.textDecoration = 'underline'; note.appendChild(l);
+      }
+      form.reset(); trackLead();
+    }
+
+    // Email set nahi hai ya internet issue: seedha WhatsApp
+    if (!FORM_EMAIL) { openWhatsApp('Thank you! Opening WhatsApp to send your message.'); return; }
+
+    btn.disabled = true; note.textContent = 'Sending your message...'; note.className = 'form__note';
+    var ctrl = ('AbortController' in window) ? new AbortController() : null;
+    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 12000);
+    fetch('https://formsubmit.co/ajax/' + encodeURIComponent(FORM_EMAIL), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        name: fields.name, email: fields.email, service: fields.service, message: fields.message,
+        _subject: 'New enquiry from Brand Booster website: ' + fields.service,
+        _replyto: fields.email, _template: 'table', _captcha: 'false'
+      }),
+      signal: ctrl ? ctrl.signal : undefined
+    }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok && j.success !== 'false' && j.success !== false, j: j }; }); })
+      .then(function (res) {
+        if (!res.ok) throw new Error('send failed');
+        note.textContent = 'Thank you! Your message has been sent. We will reply within a few hours.'; note.className = 'form__note ok';
+        form.reset(); trackLead();
+      })
+      .catch(function () {
+        // Agar email send na ho sake to customer ka message zaya na ho: WhatsApp par bhej do
+        openWhatsApp('Could not send by email, so we opened WhatsApp for you instead.');
+      })
+      .then(function () { clearTimeout(timer); btn.disabled = false; });
   });
   $$('.field input,.field select,.field textarea', form).forEach(function (i) {
     i.addEventListener('input', function () { i.parentNode.classList.remove('invalid'); });

@@ -1,0 +1,13 @@
+SETUP (live karne se pehle 3 kaam)
+
+1) DOMAIN: index.html, sitemap.xml aur robots.txt mein "YOUR-DOMAIN.com" ko apni asli domain se replace karein
+   (jaise www.brandbooster.com). Ye share preview, Google aur sitemap ke liye zaroori hai.
+
+2) CONTACT FORM EMAIL: js/config.js mein FORM_EMAIL likha hua hai. Site live hone ke baad pehli baar form
+   submit karein. Us email par FormSubmit ka "Activate" ka mail aayega, usay click karein. Uske baad har
+   enquiry seedhi email par aaye gi. Email na pohonch sake to customer ka message WhatsApp par chala jata hai.
+
+3) ANALYTICS: js/config.js mein GA_ID (Google Analytics 4, 'G-XXXXXXXXXX') aur PIXEL_ID (Meta Pixel) likh dein.
+   Khali hon to kuch load nahi hota.
+
+Hosting: poora folder kisi bhi static hosting par chalta hai (Netlify, Vercel, Cloudflare Pages, cPanel).

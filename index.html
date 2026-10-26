@@ -6,6 +6,41 @@
   <title>Brand Booster | Where the Brand Goes Digital</title>
   <meta name="description" content="Brand Booster is a digital marketing agency: social media, paid ads and lead generation, website design, branding, content and reels.">
   <meta name="theme-color" content="#fbf9f4">
+  <link rel="canonical" href="https://YOUR-DOMAIN.com/">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="author" content="Brand Booster">
+
+  <!-- Social share preview (WhatsApp, Facebook, LinkedIn, X) -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Brand Booster">
+  <meta property="og:title" content="Brand Booster | Where the Brand Goes Digital">
+  <meta property="og:description" content="Digital marketing agency: social media, paid ads and lead generation, website design, branding, content and reels.">
+  <meta property="og:url" content="https://YOUR-DOMAIN.com/">
+  <meta property="og:image" content="https://YOUR-DOMAIN.com/assets/img/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="We are Brand Booster, a marketing agency built around strategy, creativity and execution">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Brand Booster | Where the Brand Goes Digital">
+  <meta name="twitter:description" content="Digital marketing agency: social media, paid ads and lead generation, website design, branding, content and reels.">
+  <meta name="twitter:image" content="https://YOUR-DOMAIN.com/assets/img/og-image.jpg">
+
+  <!-- Structured data for Google -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "name": "Brand Booster",
+    "description": "Digital marketing agency: social media marketing, paid ads and lead generation, website design, brand identity, content and reels.",
+    "url": "https://YOUR-DOMAIN.com/",
+    "logo": "https://YOUR-DOMAIN.com/assets/img/logo-mark.png",
+    "image": "https://YOUR-DOMAIN.com/assets/img/og-image.jpg",
+    "email": "luxemediapromgt@gmail.com",
+    "telephone": "+923077667899",
+    "sameAs": ["https://instagram.com/sa____dia"],
+    "areaServed": "PK"
+  }
+  </script>
   <link rel="icon" type="image/png" href="assets/img/logo-mark.png">
   <script>document.documentElement.classList.add('js');</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -44,7 +79,7 @@
 
   <!-- Preloader -->
   <div class="preloader" id="preloader" aria-hidden="true">
-    <svg class="preloader__curve" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="curveGold" x1="0" y1="1" x2="1" y2="0"><stop offset="0%" stop-color="#a8751f"/><stop offset="38%" stop-color="#d9a441"/><stop offset="65%" stop-color="#fff0bf"/><stop offset="82%" stop-color="#e8c06a"/><stop offset="100%" stop-color="#a8751f"/></linearGradient><filter id="curveGlow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="7" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path class="preloader__curve-glow" d="M -30 1010 C 210 900, 440 670, 610 420 S 850 120, 1030 -25"/><path class="preloader__curve-line" d="M -30 1010 C 210 900, 440 670, 610 420 S 850 120, 1030 -25"/></svg>
+    <span class="preloader__seam" aria-hidden="true"></span>
     <img class="preloader__logo" src="assets/img/logo-mark.png" alt="">
     <span class="preloader__text">BRAND BOOSTER</span>
     <span class="preloader__bar"><i></i></span>
@@ -265,10 +300,10 @@
           <h2>A simple process that <em>delivers</em></h2>
         </header>
         <ol class="steps">
-          <li class="step reveal" style="--d:0s"><span class="step__n">1</span><h3>Discover</h3><p>We learn your business, audience and goals before touching a single pixel.</p></li>
+          <li class="step reveal" style="--d:0s"><span class="step__n">1</span><h3>Discover</h3><p>We learn your business, audience and goals before we design.</p></li>
           <li class="step reveal" style="--d:.1s"><span class="step__n">2</span><h3>Strategy</h3><p>A clear plan covering positioning, channels, content and budget.</p></li>
           <li class="step reveal" style="--d:.2s"><span class="step__n">3</span><h3>Create</h3><p>Design, video and copy produced to a consistent, premium standard.</p></li>
-          <li class="step reveal" style="--d:.3s"><span class="step__n">4</span><h3>Scale</h3><p>We launch, measure and optimise so results keep growing month after month.</p></li>
+          <li class="step reveal" style="--d:.3s"><span class="step__n">4</span><h3>Scale</h3><p>We launch, measure and optimise so results keep growing.</p></li>
         </ol>
       </div>
     </section>
@@ -465,7 +500,7 @@
             </select><label for="service">What do you need?</label>
           </div>
           <div class="field"><textarea id="message" name="message" rows="4" placeholder=" " required></textarea><label for="message">Tell us about your project</label></div>
-          <button type="submit" class="btn btn--gold btn--block magnetic">Send via WhatsApp <svg class="ico"><use href="#i-arrow"/></svg></button>
+          <button type="submit" class="btn btn--gold btn--block magnetic">Send Message <svg class="ico"><use href="#i-arrow"/></svg></button>
           <p class="form__note" id="formNote" role="status">We usually reply within a few hours.</p>
         </form>
       </div>
@@ -473,10 +508,50 @@
   </main>
 
   <footer class="footer">
-    <div class="container footer__in">
-      <a href="#home" class="brand"><img class="brand__mark" src="assets/img/logo-mark.png" alt=""><span class="brand__name">Brand <b>Booster</b></span></a>
-      <p>Where the brand goes digital.</p>
-      <p class="footer__copy">© <span id="year">2026</span> Brand Booster. All rights reserved.</p>
+    <div class="footer__watermark" aria-hidden="true">BRAND BOOSTER</div>
+    <div class="container footer__wrap">
+      <div class="footer__cta">
+        <div>
+          <span class="footer__eyebrow">Ready when you are</span>
+          <h3>Let's make your brand <em>impossible to ignore.</em></h3>
+        </div>
+        <a href="#contact" class="btn btn--gold">Start Your Project <svg class="ico"><use href="#i-arrow"/></svg></a>
+      </div>
+
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <a href="#home" class="brand"><img class="brand__mark" src="assets/img/logo-mark.png" alt=""><span class="brand__name">Brand <b>Booster</b></span></a>
+          <p>Where the brand goes digital.</p>
+        </div>
+        <nav class="footer__col" aria-label="Footer navigation">
+          <h4>Explore</h4>
+          <a href="#services">Services</a>
+          <a href="#showreel">Showreel</a>
+          <a href="#process">Process</a>
+          <a href="#portfolio">Portfolio</a>
+          <a href="#why">Why Us</a>
+        </nav>
+        <div class="footer__col">
+          <h4>What we do</h4>
+          <span>Social Media Marketing</span>
+          <span>Paid Ads &amp; Lead Generation</span>
+          <span>Website Design</span>
+          <span>Brand Identity &amp; Logo</span>
+          <span>Content &amp; Reels</span>
+          <span>Creative Graphics</span>
+        </div>
+        <div class="footer__col">
+          <h4>Say hello</h4>
+          <a class="footer__link" href="mailto:luxemediapromgt@gmail.com"><svg><use href="#i-mail"/></svg>Email us</a>
+          <a class="footer__link" href="https://wa.me/923077667899" target="_blank" rel="noopener"><svg><use href="#i-wa"/></svg>WhatsApp</a>
+          <a class="footer__link" href="https://instagram.com/sa____dia" target="_blank" rel="noopener"><svg><use href="#i-ig"/></svg>Instagram</a>
+        </div>
+      </div>
+
+      <div class="footer__bottom">
+        <p class="footer__copy">&copy; <span id="year">2026</span> Brand Booster. All rights reserved.</p>
+        <a href="#home" class="footer__top" aria-label="Back to top">Back to top <svg class="ico"><use href="#i-arrow"/></svg></a>
+      </div>
     </div>
   </footer>
 
@@ -489,6 +564,7 @@
     <p class="modal__title" id="modalTitle"></p>
   </div>
 
+  <script src="js/config.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>
