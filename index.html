@@ -308,143 +308,74 @@
       </div>
     </section>
 
-    <!-- PORTFOLIO -->
-    <section class="section section--wine" id="portfolio">
+    <!-- PORTFOLIO (poster showcase: theme card, vertical slide transition, lightbox) -->
+    <section class="section section--alt" id="portfolio" aria-labelledby="workTitle">
       <div class="container">
         <header class="section__head reveal">
           <span class="eyebrow">Creative portfolio</span>
-          <h2>Design that <em>speaks for the brand</em></h2>
-          <p>A look at our creative studio, the tools we use and the way we think. Click any card to enlarge.</p>
+          <h2 id="workTitle">Design that <em>speaks for the brand</em></h2>
+          <p>Typography-led posters from our studio. Pick a poster, or tap it to view it full size.</p>
         </header>
-
-        <!-- Auto-playing slider with click-to-enlarge and scroll-in animation -->
-        <div class="pslider" id="pslider">
-          <div class="pslider__viewport">
-            <div class="pslider__track">
-              <div class="pslide"><button type="button" data-full="assets/img/portfolio-full.jpg" data-cap="Creative studio overview"><img src="assets/img/portfolio-full.jpg" alt="Creative studio portfolio overview with services, featured work and tools"></button></div>
-              <div class="pslide"><button type="button" data-full="assets/img/about-me.jpg" data-cap="About me"><img src="assets/img/about-me.jpg" alt="About me: creative designer specialising in brand identity, social media creatives and marketing materials"></button></div>
-              <div class="pslide"><button type="button" data-full="assets/img/why-me.jpg" data-cap="Why choose us"><img src="assets/img/why-me.jpg" alt="Why choose us: strategy-backed design and long-term brand growth"></button></div>
-              <div class="pslide"><button type="button" data-full="assets/img/design-tools.jpg" data-cap="Design tools"><img src="assets/img/design-tools.jpg" alt="Design tools: Photoshop, Illustrator, Pixellab, Picsart, Canva, ChatGPT"></button></div>
-              <div class="pslide"><button type="button" data-full="assets/img/connect.jpg" data-cap="Let's connect"><img src="assets/img/connect.jpg" alt="Let's connect: WhatsApp, Instagram and email"></button></div>
+        <div class="pshow" id="pshow" data-theme="gold" role="region" aria-roledescription="carousel" aria-label="Selected work posters">
+          <div class="pcard3d" id="pcard">
+            <div class="pcard3d__top">
+              <span class="pcard3d__logo">Brand<b>Booster</b></span>
+              <span class="pcard3d__pills"><i class="on">Posters</i><i>Studio</i></span>
+              <span class="pcard3d__nav"><button type="button" class="pnav pprev" aria-label="Previous poster">&#8249;</button><button type="button" class="pnav pnext" aria-label="Next poster">&#8250;</button></span>
             </div>
-          </div>
-          <div class="pslider__dots" id="psliderDots"></div>
-        </div>
-
-        <style>
-          .pslider{max-width:760px;margin:0 auto}
-          /* entrance animation: plays when the slider scrolls into view */
-          .js .pslider{opacity:0;transform:translateY(60px) scale(.92);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.8,.2,1)}
-          .js .pslider.is-in{opacity:1;transform:none}
-          .pslider.is-in .pslider__viewport{animation:psGlow 2.2s ease .4s 1}
-          @keyframes psGlow{0%{box-shadow:0 0 0 rgba(217,164,65,0)}40%{box-shadow:0 0 60px rgba(217,164,65,.55)}100%{box-shadow:0 0 0 rgba(217,164,65,0)}}
-          .pslider__viewport{overflow:hidden;border-radius:22px}
-          .pslider__track{display:flex;transition:transform .7s cubic-bezier(.65,0,.35,1)}
-          .pslide{min-width:100%;display:flex;justify-content:center}
-          .pslide button{background:none;border:0;padding:0;cursor:zoom-in;height:min(72vh,640px);max-width:100%}
-          .pslide img{height:100%;width:auto;max-width:100%;object-fit:contain;border-radius:20px;box-shadow:0 18px 50px rgba(0,0,0,.35);transform:scale(.9);opacity:.5;transition:transform .8s ease,opacity .8s ease}
-          .pslide.is-active img{transform:scale(1);opacity:1}
-          .pslide button:hover img{transform:scale(1.02)}
-          .pslider__dots{display:flex;justify-content:center;gap:10px;padding:22px 0 4px}
-          .pdot{width:12px;height:12px;border-radius:50%;border:0;padding:0;background:linear-gradient(135deg,#f7e2a4,#d9a441 55%,#a8751f);opacity:.45;cursor:pointer;transition:all .35s}
-          .pdot.is-on{opacity:1;transform:scale(1.4);box-shadow:0 0 14px rgba(217,164,65,.85)}
-
-          /* click-to-enlarge viewer */
-          .plb{position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:24px;background:rgba(10,8,14,.88);backdrop-filter:blur(6px);opacity:0;visibility:hidden;transition:opacity .35s ease,visibility .35s}
-          .plb.is-open{opacity:1;visibility:visible}
-          .plb img{max-width:min(94vw,1000px);max-height:82vh;object-fit:contain;border-radius:16px;box-shadow:0 25px 80px rgba(0,0,0,.6);transform:scale(.7);transition:transform .45s cubic-bezier(.2,.8,.2,1)}
-          .plb.is-open img{transform:scale(1)}
-          .plb p{margin:0;color:#f7e2a4;font-family:'Playfair Display',serif;font-size:1.1rem}
-          .plb__x{position:absolute;top:18px;right:22px;width:46px;height:46px;border-radius:50%;border:1px solid rgba(247,226,164,.6);background:rgba(0,0,0,.4);color:#f7e2a4;font-size:28px;line-height:1;cursor:pointer}
-        </style>
-
-        <script>
-        (function(){
-          var box=document.getElementById('pslider');
-          var track=box.querySelector('.pslider__track');
-          var slides=track.children;
-          var dotsBox=document.getElementById('psliderDots');
-          var count=slides.length, i=0, timer=null, paused=false, visible=false;
-
-          /* dots: images ke barabar khud ban jate hain */
-          for(var n=0;n<count;n++){
-            (function(n){
-              var d=document.createElement('button');
-              d.type='button';
-              d.className='pdot';
-              d.setAttribute('aria-label','Go to image '+(n+1));
-              d.onclick=function(){i=n;show();restart();};
-              dotsBox.appendChild(d);
-            })(n);
-          }
-          function show(){
-            track.style.transform='translateX(-'+(i*100)+'%)';
-            for(var k=0;k<count;k++) slides[k].classList.toggle('is-active',k===i);
-            var dots=dotsBox.children;
-            for(var k2=0;k2<dots.length;k2++) dots[k2].classList.toggle('is-on',k2===i);
-          }
-          function stop(){clearInterval(timer);timer=null;}
-          function start(){stop();if(visible&&!paused){timer=setInterval(function(){i=(i+1)%count;show();},3000);}}
-          function restart(){start();}
-
-          /* mouse upar ho to ruk jaye */
-          box.addEventListener('mouseenter',function(){paused=true;stop();});
-          box.addEventListener('mouseleave',function(){paused=false;start();});
-
-          /* animation tab chale jab slider screen par pahunche */
-          function reveal(){
-            if(box.classList.contains('is-in'))return;
-            box.classList.add('is-in');visible=true;i=0;show();start();
-          }
-          if('IntersectionObserver' in window){
-            var io=new IntersectionObserver(function(entries){
-              entries.forEach(function(e){
-                if(e.isIntersecting){reveal();visible=true;start();}
-                else{visible=false;stop();}
-              });
-            },{threshold:0.25});
-            io.observe(box);
-          }else{reveal();}
-          show();
-
-          /* click par picture bari ho jaye */
-          var lb=document.createElement('div');
-          lb.className='plb';
-          lb.innerHTML='<button type="button" class="plb__x" aria-label="Close">&times;</button><img alt=""><p></p>';
-          document.body.appendChild(lb);
-          var lbImg=lb.querySelector('img'), lbCap=lb.querySelector('p');
-          function openLb(src,cap){
-            lbImg.src=src;lbCap.textContent=cap||'';
-            lb.classList.add('is-open');document.body.style.overflow='hidden';
-            paused=true;stop();
-          }
-          function closeLb(){
-            lb.classList.remove('is-open');document.body.style.overflow='';
-            paused=false;start();
-          }
-          track.addEventListener('click',function(e){
-            var b=e.target.closest('button[data-full]');
-            if(b)openLb(b.getAttribute('data-full'),b.getAttribute('data-cap'));
-          });
-          window.bbLightbox={open:openLb};
-          lb.addEventListener('click',function(e){if(e.target!==lbImg)closeLb();});
-          document.addEventListener('keydown',function(e){if(e.key==='Escape'&&lb.classList.contains('is-open'))closeLb();});
-        })();
-        </script>
-
-        <div class="tools reveal">
-          <span class="tools__label">Tools we use</span>
-          <ul>
-            <li>Photoshop</li><li>Illustrator</li><li>Pixellab</li><li>Picsart</li><li>Canva</li><li>ChatGPT</li>
-          </ul>
-        </div>
-
-        <div class="logo-card glass reveal">
-          <img class="logo-card__img" src="assets/img/logo-full.jpg" alt="Brand Booster logo" loading="lazy">
-          <div class="logo-card__text">
-            <h3>Your brand could be <em>next</em></h3>
-            <p>Let's build a look that people remember.</p>
-            <a href="#contact" class="btn btn--gold btn--sm">Get in Touch <svg class="ico"><use href="#i-arrow"/></svg></a>
+            <div class="pcard3d__text">
+              <h3 class="ptitle" id="ptitle"><span>Brand Code</span></h3>
+              <p class="pno"><b id="pnum">01</b> / 09</p>
+              <p class="pdesc" id="pdesc"><span>Design is how we look, nature is how we speak, aspiration is why we build.</span></p>
+            </div>
+            <div class="pstage" id="pstage">
+              <div class="pblobs pblobs--back" aria-hidden="true"><i></i><i></i><i></i></div>
+              <div class="ppose">
+              <button type="button" class="pp" data-i="0" data-full="assets/img/work/01.jpg" data-cap="Brand Code" data-desc="Design is how we look, nature is how we speak, aspiration is why we build." data-theme="gold" aria-label="View poster full size: Brand Code">
+                <img src="assets/img/work/01.jpg" alt="" loading="eager" decoding="async">
+              </button>
+              <button type="button" class="pp" data-i="1" data-full="assets/img/work/02.jpg" data-cap="Brand identity" data-desc="A next-gen branding and growth identity. Build. Boost. Become." data-theme="navy" aria-label="View poster full size: Brand identity">
+                <img src="assets/img/work/02.jpg" alt="" loading="eager" decoding="async">
+              </button>
+              <button type="button" class="pp" data-i="2" data-full="assets/img/work/03.jpg" data-cap="Branding services" data-desc="Strategy, identity design, digital branding, print and packaging." data-theme="ivory" aria-label="View poster full size: Branding services">
+                <img src="assets/img/work/03.jpg" alt="" loading="lazy" decoding="async">
+              </button>
+              <button type="button" class="pp" data-i="3" data-full="assets/img/work/04.jpg" data-cap="The Mind" data-desc="A quiet designer shaping the world long before the hands ever touch it." data-theme="navy" aria-label="View poster full size: The Mind">
+                <img src="assets/img/work/04.jpg" alt="" loading="lazy" decoding="async">
+              </button>
+              <button type="button" class="pp" data-i="4" data-full="assets/img/work/05.jpg" data-cap="Content strategy" data-desc="Don't just post, strategize. Content that never quits." data-theme="gold" aria-label="View poster full size: Content strategy">
+                <img src="assets/img/work/05.jpg" alt="" loading="lazy" decoding="async">
+              </button>
+              <button type="button" class="pp" data-i="5" data-full="assets/img/work/06.jpg" data-cap="Social media" data-desc="We turn followers into community, one post at a time." data-theme="ivory" aria-label="View poster full size: Social media">
+                <img src="assets/img/work/06.jpg" alt="" loading="lazy" decoding="async">
+              </button>
+              <button type="button" class="pp" data-i="6" data-full="assets/img/work/07.jpg" data-cap="Legacy" data-desc="Times Roman is just a font. BrandBooster is a legacy." data-theme="gold" aria-label="View poster full size: Legacy">
+                <img src="assets/img/work/07.jpg" alt="" loading="lazy" decoding="async">
+              </button>
+              <button type="button" class="pp" data-i="7" data-full="assets/img/work/08.jpg" data-cap="Time" data-desc="The only strategy that compounds with time." data-theme="navy" aria-label="View poster full size: Time">
+                <img src="assets/img/work/08.jpg" alt="" loading="lazy" decoding="async">
+              </button>
+              <button type="button" class="pp" data-i="8" data-full="assets/img/work/09.jpg" data-cap="Perfect" data-desc="Patient, real work and extra craft. That is the BrandBooster way." data-theme="ivory" aria-label="View poster full size: Perfect">
+                <img src="assets/img/work/09.jpg" alt="" loading="lazy" decoding="async">
+              </button>
+              </div>
+              <div class="pblobs pblobs--front" aria-hidden="true"><i></i><i></i><i></i></div>
+            </div>
+            <div class="pdots" role="tablist" aria-label="Choose poster">
+            <button type="button" class="pdot" data-i="0" aria-label="Show poster 01: Brand Code"><img src="assets/img/work/01.jpg" alt="" loading="lazy" decoding="async"></button>
+            <button type="button" class="pdot" data-i="1" aria-label="Show poster 02: Brand identity"><img src="assets/img/work/02.jpg" alt="" loading="lazy" decoding="async"></button>
+            <button type="button" class="pdot" data-i="2" aria-label="Show poster 03: Branding services"><img src="assets/img/work/03.jpg" alt="" loading="lazy" decoding="async"></button>
+            <button type="button" class="pdot" data-i="3" aria-label="Show poster 04: The Mind"><img src="assets/img/work/04.jpg" alt="" loading="lazy" decoding="async"></button>
+            <button type="button" class="pdot" data-i="4" aria-label="Show poster 05: Content strategy"><img src="assets/img/work/05.jpg" alt="" loading="lazy" decoding="async"></button>
+            <button type="button" class="pdot" data-i="5" aria-label="Show poster 06: Social media"><img src="assets/img/work/06.jpg" alt="" loading="lazy" decoding="async"></button>
+            <button type="button" class="pdot" data-i="6" aria-label="Show poster 07: Legacy"><img src="assets/img/work/07.jpg" alt="" loading="lazy" decoding="async"></button>
+            <button type="button" class="pdot" data-i="7" aria-label="Show poster 08: Time"><img src="assets/img/work/08.jpg" alt="" loading="lazy" decoding="async"></button>
+            <button type="button" class="pdot" data-i="8" aria-label="Show poster 09: Perfect"><img src="assets/img/work/09.jpg" alt="" loading="lazy" decoding="async"></button>
+            </div>
+            <div class="pcard3d__foot">
+              <button type="button" class="pview" id="pview">View full size</button>
+              <a class="pcta" href="#contact">Your brand could be <em>next</em> &rarr;</a>
+            </div>
           </div>
         </div>
       </div>
@@ -566,5 +497,6 @@
 
   <script src="js/config.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/gallery.js"></script>
 </body>
 </html>
